@@ -1,0 +1,131 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  ID String @id
+  username String
+  type Int
+  createdAt DateTime
+  updatedAt DateTime
+  email String @unique
+  password String
+  image_profile String
+  Students Students?
+}
+
+model Class {
+  ID String @id
+  description String
+  active Int
+  value Float
+  schedule DateTime
+  createdAt DateTime
+  updatedAt DateTime
+  professorsClass_ID String
+  maxStudents Int
+  waitingList_ID String
+}
+
+model Students {
+  ID String @id @default(uuid())
+  name String
+  active Int
+  birthday DateTime
+  cep Int
+  number Int
+  createdAt DateTime
+  updatedAt DateTime
+  state String
+  city String
+  membership_ID String
+  nickname String
+  socialName String
+  transmitionList_ID String
+  user_ID String? @unique
+  User  User?   @relation(fields: [user_ID], references: [ID])
+}
+
+model StudentsClass {
+  ID String @id
+  studentsID String
+  classID String
+}
+
+model Professors {
+  ID String @id
+  name String
+  active Int
+  salary Float
+  createdAt DateTime
+  updatedAt DateTime
+  professorsClass_ID String
+  startedAt DateTime
+  finishedAt DateTime
+  transmitionList_ID String
+  user_ID String
+}
+
+model ProfessorsClass {
+  ID String @id
+  professorsID String
+  classID String
+}
+
+model TransmitionList {
+  ID String @id
+  description String
+  createdAt DateTime
+  updatedAt DateTime
+}
+
+model WaitingList {
+  ID String @id
+  students_ID String
+  class_ID String
+}
+
+model AttendanceList {
+  ID String @id
+  presence Int
+  createdAt DateTime
+  updatedAt DateTime
+  dateList DateTime
+  class_ID Int
+  class_ProfessorsClass_ID String
+  class_WaitingList_ID String
+  students_ID String
+  students_Membership_ID String
+  students_TransmitionList_ID String
+}
+
+model Membership {
+  ID String @id
+  cost Float
+  type String
+  description String
+  createdAt DateTime
+  updatedAt DateTime
+}
+
+model Notification {
+  ID String @id
+  message String
+  title String
+  createdAt DateTime
+  updatedAt DateTime
+  transmitionList_ID String
+  professorID String
+  studentID String
+}
